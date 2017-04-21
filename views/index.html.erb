@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upload Errors</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Engineer Report</h1>
+      <h2>By Engineer</h2>
+      <% @engineers.each do |engineer| %>
+        <h3><%= engineer.name %></h3>
+        <hr>
+        <% if engineer.working.length > 0 %>
+          <h4>Actively Working On</h4>
+          <ul>
+            <% engineer.working.each do |card| %>
+              <li><a href="<%= card.url %>" target=_blank><%= card.name %></a></li>
+            <% end %>
+          </ul>
+        <% end %>
+        <% if engineer.up_next.length > 0 %>
+          <h4>Next</h4>
+          <ul>
+            <% engineer.up_next.each do |card| %>
+              <li><a href="<%= card.url %>" target=_blank><%= card.name %></a></li>
+            <% end %>
+          </ul>
+        <% end %>
+        <% if engineer.deployed.length > 0 %>
+          <h4>Recently Deployed</h4>
+          <ul>
+            <% engineer.deployed.each do |card| %>
+              <li><a href="<%= card.url %>" target=_blank><%= card.name %></a></li>
+            <% end %>
+          </ul>
+        <% end %>
+      <% end %>
+      <h2>By Application</h2>
+      <% @next.each do |tag, cards| %>
+        <h3><%= tag %></h3>
+        <ul>
+          <% cards.each do |card| %>
+            <li><a href="<%= card.url %>" target=_blank><%= card.name.split(' ', 2).last %></a></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </body>
+</html>

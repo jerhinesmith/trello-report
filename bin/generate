@@ -1,0 +1,81 @@
+#!/usr/bin/env ruby
+
+$VERBOSE = nil
+require 'rubygems'
+require 'bundler/setup'
+require 'dotenv/load'
+require 'trello'
+require 'erb'
+require 'fog/aws'
+require 'optparse'
+
+# options = {}
+# OptionParser.new do |opts|
+#   opts.banner = "Usage: bin/generate [options]"
+
+#   opts.on("-p", "--prefix PREFIX", "The card prefix (without brackets)") do |prefix|
+#     options[:prefix] = prefix
+#   end
+
+#   opts.on("-u", "--username USERNAME", "The username to generate for") do |username|
+#     options[:username] = username
+#   end
+# end.parse!
+
+# raise(OptionParser::MissingArgument, "Prefix is required") if options[:prefix].nil?
+# raise(OptionParser::MissingArgument, "Username is required") if options[:username].nil?
+
+Engineer = Struct.new(:name, :working, :up_next, :deployed)
+
+Trello.configure do |config|
+  config.developer_public_key = ENV['TRELLO_DEVELOPER_PUBLIC_KEY']
+  config.member_token = ENV['TRELLO_MEMBER_TOKEN']
+end
+
+board = Trello::Board.find(ENV['BOARD_ID'])
+
+members = board.members.select{ |m| ENV['ENGINEERS'].split(',').include?(m.username) }
+working_lists = board.lists.select{ |l| ['In Progress', 'Staged', 'Approved'].include?(l.name) }
+next_list = board.lists.find{ |l| l.name == 'Next' }
+deployed_list = board.lists.select{ |l| l.name =~ /Live\sthis\sweek$/i }.first
+
+# Grab all the cards so we don't have to make multiple requests
+cards = board.cards
+
+# Initialize the engineer array
+@engineers = []
+@next = next_list.cards.inject(Hash.new{|h,k| h[k] = []}) {|a,c| tag, name = c.name.split(' ', 2); a[tag] << c; a}
+
+members.each do |member|
+  member_cards = cards.select{ |c| c.member_ids.include?(member.id) }
+  working = member_cards.select{ |c| working_lists.collect(&:id).include?(c.list_id) }
+  up_next = member_cards.select{ |c| c.list_id == next_list.id }
+  deployed = member_cards.select{ |c| c.list_id == deployed_list.id }
+
+  @engineers << Engineer.new(member.full_name, working, up_next, deployed)
+end
+
+report_template = File.read(File.expand_path('../../views/index.html.erb', __FILE__))
+renderer = ERB.new(report_template)
+
+# create a connection
+connection = Fog::Storage.new({
+  provider:               'AWS',
+  aws_access_key_id:      ENV['AWS_ACCESS_KEY_ID'],
+  aws_secret_access_key:  ENV['AWS_SECRET_ACCESS_KEY']
+})
+
+# First, a place to contain the glorious details
+directory = connection.directories.create(
+  key:    "org-opportunityeducation-quest-development-report",
+  public: true
+)
+
+# Upload the quest json
+report = directory.files.create(
+  key:    'engineering.html',
+  body:   renderer.result(binding),
+  public: true
+)
+
+puts report.public_url

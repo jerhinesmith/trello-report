@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'bundler/setup'
+require 'dotenv/load'
+require 'trello'
+require 'irb'
+
+Trello.configure do |config|
+  config.developer_public_key = ENV['TRELLO_DEVELOPER_PUBLIC_KEY']
+  config.member_token = ENV['TRELLO_MEMBER_TOKEN']
+end
+
+IRB.start

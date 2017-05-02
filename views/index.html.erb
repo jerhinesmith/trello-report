@@ -4,51 +4,50 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Engineering Trello Report</title>
+    <title>NGL Platform Engineering Report</title>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <meta property="og:title" content="NGL Platform Engineering Report" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://org-opportunityeducation-quest-development-report.s3.amazonaws.com/report.html" />
+    <meta property="og:image" content="https://s3.amazonaws.com/engineering.questlearning.org/images/report.png" />
+    <meta property="og:description" content="A snapshot of what the engineering team is working on (as reflected in trello)" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="NGL Platform Engineering" />
   </head>
   <body>
     <div class="container">
-      <h1>Engineer Report</h1>
-      <h2>By Engineer</h2>
-      <% @engineers.each do |engineer| %>
-        <h3><%= engineer.name %></h3>
-        <hr>
-        <% if engineer.working.length > 0 %>
-          <h4>Actively Working On</h4>
-          <ul>
-            <% engineer.working.each do |card| %>
-              <li><a href="<%= card.url %>" target=_blank><%= card.name %></a></li>
-            <% end %>
-          </ul>
+      <div class="page-header">
+        <h1>NGL Platform Engineering Report <small>Generated on <%= Time.now.strftime('%B %-d') %></small></h1>
+      </div>
+      <h2>Recently Depoyed</h2>
+      <ul>
+        <% @deployed_cards.each do |card| %>
+          <li><a href="<%= card.url %>" target=_blank><%= card.name %></a></li>
         <% end %>
-        <% if engineer.up_next.length > 0 %>
-          <h4>Next</h4>
-          <ul>
-            <% engineer.up_next.each do |card| %>
-              <li><a href="<%= card.url %>" target=_blank><%= card.name %></a></li>
+      </ul>
+      <h2>Coming Up Next</h2>
+      <ol>
+        <% @upcoming_cards.each do |card| %>
+          <li>
+            <a href="<%= card.url %>" target=_blank><%= card.name %></a>
+            <% if !card.due.nil? %>
+              <span class="label label-<%= (card.due < Time.now ? 'danger' : 'success') %>"><%= card.due.strftime('%a, %B %-d') %></span>
             <% end %>
-          </ul>
+          </li>
         <% end %>
-        <% if engineer.deployed.length > 0 %>
-          <h4>Recently Deployed</h4>
-          <ul>
-            <% engineer.deployed.each do |card| %>
-              <li><a href="<%= card.url %>" target=_blank><%= card.name %></a></li>
+      </ol>
+      <h2>In Progress</h2>
+      <ol>
+        <% @working_cards.each do |card| %>
+          <li>
+            <a href="<%= card.url %>" target=_blank><%= card.name %></a>
+            <% if !card.due.nil? %>
+              <span class="label label-<%= (card.due < Time.now ? 'danger' : 'success') %>"><%= card.due.strftime('%a, %B %-d') %></span>
             <% end %>
-          </ul>
+          </li>
         <% end %>
-      <% end %>
-      <h2>By Application</h2>
-      <% @next.each do |tag, cards| %>
-        <h3><%= tag %></h3>
-        <ul>
-          <% cards.each do |card| %>
-            <li><a href="<%= card.url %>" target=_blank><%= card.name.split(' ', 2).last %></a></li>
-          <% end %>
-        </ul>
-      <% end %>
+      </ol>
     </div>
   </body>
 </html>

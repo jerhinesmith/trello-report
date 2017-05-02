@@ -25,6 +25,8 @@ require 'optparse'
 # raise(OptionParser::MissingArgument, "Prefix is required") if options[:prefix].nil?
 # raise(OptionParser::MissingArgument, "Username is required") if options[:username].nil?
 
+DEFAULT_DUE_DATE = Time.now + (60 * 60 * 24 * 30)
+
 Engineer = Struct.new(:name, :working, :up_next, :deployed)
 
 Trello.configure do |config|
@@ -35,25 +37,18 @@ end
 board = Trello::Board.find(ENV['BOARD_ID'])
 
 members = board.members.select{ |m| ENV['ENGINEERS'].split(',').include?(m.username) }
-working_lists = board.lists.select{ |l| ['In Progress', 'Staged', 'Approved'].include?(l.name) }
+upcoming_lists = board.lists.select{ |l| ['Staged', 'Approved'].include?(l.name) }
+working_list = board.lists.find{ |l| l.name == 'In Progress' }
 next_list = board.lists.find{ |l| l.name == 'Next' }
 deployed_list = board.lists.select{ |l| l.name =~ /Live\sthis\sweek$/i }.first
 
 # Grab all the cards so we don't have to make multiple requests
 cards = board.cards
 
-# Initialize the engineer array
-@engineers = []
-@next = next_list.cards.inject(Hash.new{|h,k| h[k] = []}) {|a,c| tag, name = c.name.split(' ', 2); a[tag] << c; a}
-
-members.each do |member|
-  member_cards = cards.select{ |c| c.member_ids.include?(member.id) }
-  working = member_cards.select{ |c| working_lists.collect(&:id).include?(c.list_id) }
-  up_next = member_cards.select{ |c| c.list_id == next_list.id }
-  deployed = member_cards.select{ |c| c.list_id == deployed_list.id }
-
-  @engineers << Engineer.new(member.full_name, working, up_next, deployed)
-end
+# Get the upcoming cards
+@upcoming_cards  = cards.select{ |c| upcoming_lists.collect(&:id).include?(c.list_id) && !c.due.nil? }.sort_by(&:due)
+@working_cards   = cards.select{ |c| c.list_id == working_list.id }.sort_by{|c| c.due || DEFAULT_DUE_DATE }
+@deployed_cards  = cards.select{ |c| c.list_id == deployed_list.id }
 
 report_template = File.read(File.expand_path('../../views/index.html.erb', __FILE__))
 renderer = ERB.new(report_template)
@@ -67,13 +62,13 @@ connection = Fog::Storage.new({
 
 # First, a place to contain the glorious details
 directory = connection.directories.create(
-  key:    "org-opportunityeducation-quest-development-report",
+  key:    "engineering.questlearning.org",
   public: true
 )
 
 # Upload the quest json
 report = directory.files.create(
-  key:    'engineering.html',
+  key:    'report.html',
   body:   renderer.result(binding),
   public: true
 )

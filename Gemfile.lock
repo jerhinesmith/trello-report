@@ -13,6 +13,7 @@ GEM
       public_suffix (~> 2.0, >= 2.0.2)
     builder (3.2.3)
     concurrent-ruby (1.0.5)
+    concurrent-ruby (1.0.5-java)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.2.0)
@@ -151,6 +152,7 @@ GEM
     inflecto (0.0.2)
     ipaddress (0.8.3)
     json (2.1.0)
+    json (2.1.0-java)
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
@@ -160,6 +162,7 @@ GEM
     netrc (0.11.0)
     nokogiri (1.7.1)
       mini_portile2 (~> 2.1.0)
+    nokogiri (1.7.1-java)
     oauth (0.5.1)
     public_suffix (2.0.5)
     rbvmomi (1.11.0)
@@ -178,15 +181,18 @@ GEM
       oauth (>= 0.4.5)
       rest-client (>= 1.8.0)
     thread_safe (0.3.6)
+    thread_safe (0.3.6-java)
     trollop (2.1.2)
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
+    unf (0.1.4-java)
     unf_ext (0.0.7.4)
     xml-simple (1.1.5)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
@@ -195,7 +201,7 @@ DEPENDENCIES
   ruby-trello
 
 RUBY VERSION
-   ruby 2.4.0p0
+   ruby 2.3.1p0 (jruby 9.1.5.0)
 
 BUNDLED WITH
    1.14.3

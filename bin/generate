@@ -34,6 +34,9 @@ cards = board.cards
 report_template = File.read(File.expand_path('../../views/index.html.erb', __FILE__))
 renderer = ERB.new(report_template)
 
+# jruby?
+Excon.defaults[:ciphers] = 'DEFAULT'
+
 # create a connection
 connection = Fog::Storage.new({
   provider:               'AWS',

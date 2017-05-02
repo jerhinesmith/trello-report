@@ -22,13 +22,13 @@
       </div>
       <h2>Recently Depoyed</h2>
       <ul>
-        <% @deployed_cards.each do |card| %>
+        <% @dashboard.deployed.each do |card| %>
           <li><a href="<%= card.url %>" target=_blank><%= card.name %></a></li>
         <% end %>
       </ul>
       <h2>Coming Up Next</h2>
       <ol>
-        <% @upcoming_cards.each do |card| %>
+        <% @dashboard.upcoming.each do |card| %>
           <li>
             <a href="<%= card.url %>" target=_blank><%= card.name %></a>
             <% if !card.due.nil? %>
@@ -39,7 +39,7 @@
       </ol>
       <h2>In Progress</h2>
       <ol>
-        <% @working_cards.each do |card| %>
+        <% @dashboard.working.each do |card| %>
           <li>
             <a href="<%= card.url %>" target=_blank><%= card.name %></a>
             <% if !card.due.nil? %>

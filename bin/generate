@@ -7,27 +7,8 @@ require 'dotenv/load'
 require 'trello'
 require 'erb'
 require 'fog/aws'
-require 'optparse'
-
-# options = {}
-# OptionParser.new do |opts|
-#   opts.banner = "Usage: bin/generate [options]"
-
-#   opts.on("-p", "--prefix PREFIX", "The card prefix (without brackets)") do |prefix|
-#     options[:prefix] = prefix
-#   end
-
-#   opts.on("-u", "--username USERNAME", "The username to generate for") do |username|
-#     options[:username] = username
-#   end
-# end.parse!
-
-# raise(OptionParser::MissingArgument, "Prefix is required") if options[:prefix].nil?
-# raise(OptionParser::MissingArgument, "Username is required") if options[:username].nil?
 
 DEFAULT_DUE_DATE = Time.now + (60 * 60 * 24 * 30)
-
-Engineer = Struct.new(:name, :working, :up_next, :deployed)
 
 Trello.configure do |config|
   config.developer_public_key = ENV['TRELLO_DEVELOPER_PUBLIC_KEY']
@@ -62,7 +43,7 @@ connection = Fog::Storage.new({
 
 # First, a place to contain the glorious details
 directory = connection.directories.create(
-  key:    "engineering.questlearning.org",
+  key:    'engineering.questlearning.org',
   public: true
 )
 

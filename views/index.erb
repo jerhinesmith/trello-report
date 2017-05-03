@@ -20,7 +20,7 @@
       <div class="page-header">
         <h1>NGL Platform Engineering Report <small>Generated on <%= Time.now.strftime('%B %-d') %></small></h1>
       </div>
-      <h2>Recently Depoyed</h2>
+      <h2>Recently Deployed</h2>
       <ul>
         <% @dashboard.deployed.each do |card| %>
           <li><a href="<%= card.url %>" target=_blank><%= card.name %></a></li>

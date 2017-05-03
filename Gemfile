@@ -9,6 +9,7 @@ gem 'rack-cache'
 
 group :development, :test do
   gem 'dotenv'
+  gem 'awesome_print'
 end
 
 group :production do

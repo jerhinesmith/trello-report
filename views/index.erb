@@ -18,7 +18,7 @@
   <body>
     <div class="container">
       <div class="page-header">
-        <h1>NGL Platform Engineering Report <small>Generated on <%= Time.now.strftime('%B %-d') %></small></h1>
+        <h1>NGL Platform Engineering Report <small>Generated on <%= Time.now.utc.strftime('%B %-d') %></small></h1>
       </div>
       <h2>Recently Deployed</h2>
       <ul>
@@ -32,7 +32,7 @@
           <li>
             <a href="<%= card.url %>" target=_blank><%= card.name %></a>
             <% if !card.due.nil? %>
-              <span class="label label-<%= (card.due < Time.now ? 'danger' : 'success') %>"><%= card.due.strftime('%a, %B %-d') %></span>
+              <span class="label label-<%= (card.due < Time.now.utc ? 'danger' : 'success') %>"><%= card.due.strftime('%a, %B %-d') %></span>
             <% end %>
           </li>
         <% end %>
@@ -43,7 +43,7 @@
           <li>
             <a href="<%= card.url %>" target=_blank><%= card.name %></a>
             <% if !card.due.nil? %>
-              <span class="label label-<%= (card.due < Time.now ? 'danger' : 'success') %>"><%= card.due.strftime('%a, %B %-d') %></span>
+              <span class="label label-<%= (card.due < Time.now.utc ? 'danger' : 'success') %>"><%= card.due.strftime('%a, %B %-d') %></span>
             <% end %>
           </li>
         <% end %>

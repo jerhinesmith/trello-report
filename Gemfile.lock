@@ -10,6 +10,7 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.5.1)
       public_suffix (~> 2.0, >= 2.0.2)
+    awesome_print (1.7.0)
     concurrent-ruby (1.0.5)
     dalli (2.7.6)
     domain_name (0.5.20170404)
@@ -58,6 +59,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  awesome_print
   dalli
   dotenv
   puma

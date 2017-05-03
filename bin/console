@@ -2,7 +2,7 @@
 
 require 'rubygems'
 require 'bundler/setup'
-require 'dotenv/load'
+require 'dotenv/load' unless ENV['RACK_ENV'] == 'production'
 require 'trello'
 require 'irb'
 
